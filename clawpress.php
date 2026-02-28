@@ -26,17 +26,20 @@ require_once CLAWPRESS_PLUGIN_DIR . 'includes/class-clawpress-api.php';
 require_once CLAWPRESS_PLUGIN_DIR . 'includes/class-clawpress-admin.php';
 require_once CLAWPRESS_PLUGIN_DIR . 'includes/class-clawpress-tracker.php';
 require_once CLAWPRESS_PLUGIN_DIR . 'includes/class-clawpress-manifest.php';
+require_once CLAWPRESS_PLUGIN_DIR . 'includes/class-clawpress-handshake.php';
 
 /**
  * Initialize the plugin.
  */
 function clawpress_init() {
-	$api      = new ClawPress_API();
-	$admin    = new ClawPress_Admin( $api );
-	$tracker  = new ClawPress_Tracker();
-	$manifest = new ClawPress_Manifest();
+	$api       = new ClawPress_API();
+	$admin     = new ClawPress_Admin( $api );
+	$tracker   = new ClawPress_Tracker();
+	$manifest  = new ClawPress_Manifest();
+	$handshake = new ClawPress_Handshake();
 	$admin->init();
 	$tracker->init();
 	$manifest->init();
+	$handshake->init();
 }
 add_action( 'plugins_loaded', 'clawpress_init' );

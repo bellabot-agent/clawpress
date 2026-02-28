@@ -8,6 +8,7 @@
 		initCreateButton();
 		initCopyButtons();
 		initRevokeButton();
+		initPairButton();
 	});
 
 	/**
@@ -139,6 +140,85 @@
 			btn.textContent = original;
 			btn.classList.remove('clawpress-copy-btn--copied');
 		}, 2000);
+	}
+
+	/**
+	 * Pairing code generation.
+	 */
+	function initPairButton() {
+		var btn = document.getElementById('clawpress-pair-btn');
+		if (!btn) return;
+
+		btn.addEventListener('click', function () {
+			btn.disabled = true;
+			btn.textContent = 'Generating…';
+
+			var xhr = new XMLHttpRequest();
+			xhr.open('POST', clawpress.ajax_url, true);
+			xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+			xhr.onload = function () {
+				var response;
+				try {
+					response = JSON.parse(xhr.responseText);
+				} catch (e) {
+					alert('Unexpected error.');
+					btn.disabled = false;
+					btn.textContent = 'Generate Pairing Code';
+					return;
+				}
+
+				if (response.success) {
+					showPairCode(response.data.code, response.data.expires_in);
+					btn.textContent = 'Generate New Code';
+					btn.disabled = false;
+				} else {
+					alert(response.data || 'An error occurred.');
+					btn.disabled = false;
+					btn.textContent = 'Generate Pairing Code';
+				}
+			};
+
+			xhr.onerror = function () {
+				alert('Network error.');
+				btn.disabled = false;
+				btn.textContent = 'Generate Pairing Code';
+			};
+
+			xhr.send('action=clawpress_generate_code&nonce=' + encodeURIComponent(clawpress.pair_nonce));
+		});
+	}
+
+	/**
+	 * Display the pairing code with countdown timer.
+	 */
+	function showPairCode(code, expiresIn) {
+		var result = document.getElementById('clawpress-pair-result');
+		var codeEl = document.getElementById('clawpress-pair-code');
+		var timerEl = document.getElementById('clawpress-pair-timer');
+
+		// Format code with a space in the middle for readability
+		var formatted = code.substring(0, 3) + ' ' + code.substring(3);
+		codeEl.textContent = formatted;
+		result.style.display = 'block';
+
+		// Countdown
+		var remaining = expiresIn;
+		function updateTimer() {
+			var mins = Math.floor(remaining / 60);
+			var secs = remaining % 60;
+			timerEl.textContent = 'Expires in ' + mins + ':' + (secs < 10 ? '0' : '') + secs;
+
+			if (remaining <= 0) {
+				timerEl.textContent = 'Expired — generate a new code';
+				codeEl.style.opacity = '0.3';
+				return;
+			}
+			remaining--;
+			setTimeout(updateTimer, 1000);
+		}
+		codeEl.style.opacity = '1';
+		updateTimer();
 	}
 
 	/**

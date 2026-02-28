@@ -203,3 +203,38 @@
 	vertical-align: middle;
 	margin-right: 0.4em;
 }
+
+/* Pairing Code */
+.clawpress-pair-code {
+	font-family: 'SF Mono', 'Consolas', 'Liberation Mono', monospace;
+	font-size: 48px;
+	font-weight: 700;
+	letter-spacing: 8px;
+	text-align: center;
+	padding: 24px;
+	margin: 16px 0;
+	background: #1d2327;
+	color: #72aee6;
+	border-radius: 8px;
+	user-select: all;
+	cursor: pointer;
+	transition: opacity 0.3s;
+}
+
+.clawpress-pair-code:hover {
+	color: #fff;
+}
+
+.clawpress-pair-hint {
+	text-align: center;
+	color: #646970;
+	font-style: italic;
+}
+
+.clawpress-pair-timer {
+	text-align: center;
+	color: #d63638;
+	font-size: 13px;
+	font-weight: 600;
+	margin: 8px 0;
+}

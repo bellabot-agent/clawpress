@@ -77,6 +77,7 @@ class ClawPress_Admin {
 			'ajax_url'       => admin_url( 'admin-ajax.php' ),
 			'create_nonce'   => wp_create_nonce( 'clawpress_create' ),
 			'revoke_nonce'   => wp_create_nonce( 'clawpress_revoke' ),
+			'pair_nonce'     => wp_create_nonce( 'clawpress_pair' ),
 			'confirm_msg'    => __( 'Are you sure you want to revoke the OpenClaw connection? You will need to reconfigure OpenClaw with a new password.', 'clawpress' ),
 			'creating_text'  => __( 'Connecting…', 'clawpress' ),
 			'revoking_text'  => __( 'Revoking…', 'clawpress' ),
@@ -304,13 +305,33 @@ class ClawPress_Admin {
 	private function render_disconnected_state() {
 		?>
 		<div id="clawpress-card">
-			<p>
-				<button type="button" class="button button-primary clawpress-create-btn" id="clawpress-create-btn">
-					<?php esc_html_e( 'Connect OpenClaw', 'clawpress' ); ?>
-				</button>
-			</p>
+			<h3><?php esc_html_e( 'Option 1: Quick Pair', 'clawpress' ); ?></h3>
 			<p class="clawpress-create-hint">
-				<?php esc_html_e( 'This will generate a secure Application Password for OpenClaw. You\'ll be given credentials to paste into your OpenClaw config.', 'clawpress' ); ?>
+				<?php esc_html_e( 'Generate a 6-character code and tell it to your agent. No copy-pasting credentials.', 'clawpress' ); ?>
+			</p>
+			<div id="clawpress-pair-section">
+				<button type="button" class="button button-primary" id="clawpress-pair-btn">
+					<?php esc_html_e( 'Generate Pairing Code', 'clawpress' ); ?>
+				</button>
+				<div id="clawpress-pair-result" style="display:none;">
+					<div class="clawpress-pair-code" id="clawpress-pair-code"></div>
+					<p class="clawpress-pair-hint">
+						<?php esc_html_e( 'Tell this code to your agent. It expires in 5 minutes.', 'clawpress' ); ?>
+					</p>
+					<div class="clawpress-pair-timer" id="clawpress-pair-timer"></div>
+				</div>
+			</div>
+
+			<hr style="margin: 24px 0;">
+
+			<h3><?php esc_html_e( 'Option 2: Manual Setup', 'clawpress' ); ?></h3>
+			<p class="clawpress-create-hint">
+				<?php esc_html_e( 'Generate credentials and paste them to your agent manually.', 'clawpress' ); ?>
+			</p>
+			<p>
+				<button type="button" class="button clawpress-create-btn" id="clawpress-create-btn">
+					<?php esc_html_e( 'Generate Credentials', 'clawpress' ); ?>
+				</button>
 			</p>
 		</div>
 		<?php
