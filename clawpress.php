@@ -25,15 +25,18 @@ define( 'CLAWPRESS_APP_PASSWORD_NAME', 'OpenClaw' );
 require_once CLAWPRESS_PLUGIN_DIR . 'includes/class-clawpress-api.php';
 require_once CLAWPRESS_PLUGIN_DIR . 'includes/class-clawpress-admin.php';
 require_once CLAWPRESS_PLUGIN_DIR . 'includes/class-clawpress-tracker.php';
+require_once CLAWPRESS_PLUGIN_DIR . 'includes/class-clawpress-manifest.php';
 
 /**
  * Initialize the plugin.
  */
 function clawpress_init() {
-	$api     = new ClawPress_API();
-	$admin   = new ClawPress_Admin( $api );
-	$tracker = new ClawPress_Tracker();
+	$api      = new ClawPress_API();
+	$admin    = new ClawPress_Admin( $api );
+	$tracker  = new ClawPress_Tracker();
+	$manifest = new ClawPress_Manifest();
 	$admin->init();
 	$tracker->init();
+	$manifest->init();
 }
 add_action( 'plugins_loaded', 'clawpress_init' );
