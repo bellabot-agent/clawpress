@@ -82,6 +82,7 @@ class ClawPress_Handshake {
 
 	/**
 	 * Generate a pairing code (called from wp-admin via AJAX).
+	 * Admins can pass a target_user_id to generate a code for another user.
 	 */
 	public function ajax_generate_code() {
 		check_ajax_referer( 'clawpress_pair', 'nonce' );
@@ -90,23 +91,34 @@ class ClawPress_Handshake {
 			wp_send_json_error( array( 'message' => 'Insufficient permissions.' ), 403 );
 		}
 
+		// Allow admins to generate codes for other users
+		$target_user_id = get_current_user_id();
+		if ( ! empty( $_POST['target_user_id'] ) && current_user_can( 'edit_users' ) ) {
+			$target = get_user_by( 'id', absint( $_POST['target_user_id'] ) );
+			if ( $target ) {
+				$target_user_id = $target->ID;
+			}
+		}
+
 		$code = $this->generate_code();
-		$user_id = get_current_user_id();
 
 		// Store code → user mapping with TTL
 		$transient_key = self::TRANSIENT_PREFIX . strtoupper( $code );
 		$data = array(
-			'user_id'    => $user_id,
+			'user_id'    => $target_user_id,
 			'created_at' => time(),
 			'claimed'    => false,
 		);
 
 		set_transient( $transient_key, $data, self::CODE_TTL );
 
+		$target_user = get_user_by( 'id', $target_user_id );
+
 		wp_send_json_success( array(
 			'code'       => $code,
 			'expires_in' => self::CODE_TTL,
 			'expires_at' => gmdate( 'Y-m-d\TH:i:s\Z', time() + self::CODE_TTL ),
+			'for_user'   => $target_user ? $target_user->user_login : '',
 		) );
 	}
 

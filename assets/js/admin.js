@@ -169,7 +169,7 @@
 				}
 
 				if (response.success) {
-					showPairCode(response.data.code, response.data.expires_in);
+					showPairCode(response.data.code, response.data.expires_in, response.data.for_user);
 					btn.textContent = 'Generate New Code';
 					btn.disabled = false;
 				} else {
@@ -185,14 +185,19 @@
 				btn.textContent = 'Generate Pairing Code';
 			};
 
-			xhr.send('action=clawpress_generate_code&nonce=' + encodeURIComponent(clawpress.pair_nonce));
+			var params = 'action=clawpress_generate_code&nonce=' + encodeURIComponent(clawpress.pair_nonce);
+			var userSelect = document.getElementById('clawpress-pair-user');
+			if (userSelect) {
+				params += '&target_user_id=' + encodeURIComponent(userSelect.value);
+			}
+			xhr.send(params);
 		});
 	}
 
 	/**
 	 * Display the pairing code with countdown timer.
 	 */
-	function showPairCode(code, expiresIn) {
+	function showPairCode(code, expiresIn, forUser) {
 		var result = document.getElementById('clawpress-pair-result');
 		var codeEl = document.getElementById('clawpress-pair-code');
 		var timerEl = document.getElementById('clawpress-pair-timer');
@@ -201,6 +206,11 @@
 		var formatted = code.substring(0, 3) + ' ' + code.substring(3);
 		codeEl.textContent = formatted;
 		result.style.display = 'block';
+
+		var hintEl = document.getElementById('clawpress-pair-hint');
+		if (hintEl && forUser) {
+			hintEl.textContent = 'Tell this code to your agent. Credentials will be for user "' + forUser + '". Expires in 5 minutes.';
+		}
 
 		// Countdown
 		var remaining = expiresIn;

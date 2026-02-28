@@ -310,12 +310,32 @@ class ClawPress_Admin {
 				<?php esc_html_e( 'Generate a 6-character code and tell it to your agent. No copy-pasting credentials.', 'clawpress' ); ?>
 			</p>
 			<div id="clawpress-pair-section">
+				<?php if ( current_user_can( 'edit_users' ) ) : ?>
+				<label for="clawpress-pair-user" style="display:block;margin-bottom:8px;">
+					<?php esc_html_e( 'Generate code for:', 'clawpress' ); ?>
+				</label>
+				<select id="clawpress-pair-user" style="margin-bottom:12px;min-width:200px;">
+					<?php
+					$users = get_users( array( 'orderby' => 'display_name' ) );
+					foreach ( $users as $u ) {
+						printf(
+							'<option value="%d"%s>%s (%s)</option>',
+							$u->ID,
+							selected( $u->ID, get_current_user_id(), false ),
+							esc_html( $u->display_name ),
+							esc_html( implode( ', ', $u->roles ) )
+						);
+					}
+					?>
+				</select>
+				<br>
+				<?php endif; ?>
 				<button type="button" class="button button-primary" id="clawpress-pair-btn">
 					<?php esc_html_e( 'Generate Pairing Code', 'clawpress' ); ?>
 				</button>
 				<div id="clawpress-pair-result" style="display:none;">
 					<div class="clawpress-pair-code" id="clawpress-pair-code"></div>
-					<p class="clawpress-pair-hint">
+					<p class="clawpress-pair-hint" id="clawpress-pair-hint">
 						<?php esc_html_e( 'Tell this code to your agent. It expires in 5 minutes.', 'clawpress' ); ?>
 					</p>
 					<div class="clawpress-pair-timer" id="clawpress-pair-timer"></div>
