@@ -1,0 +1,9 @@
+#clawpress-assistant-chat-root {
+  display: flex;
+  flex-direction: column;
+}
+
+#clawpress-assistant-chat-root .agenttic {
+  height: 100%;
+  flex: 1;
+}
