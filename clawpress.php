@@ -3,7 +3,7 @@
  * Plugin Name: ClawPress
  * Plugin URI:  https://openclaw.com/clawpress
  * Description: One-click wizard to connect OpenClaw to your WordPress site via Application Passwords.
- * Version:     2.0.0
+ * Version:     2.1.0
  * Author:      OpenClaw
  * Author URI:  https://openclaw.com
  * License:     GPL-2.0-or-later

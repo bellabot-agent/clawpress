@@ -218,7 +218,15 @@ class ClawPress_Assistant_Admin {
 				<div class="cp-step" id="cp-step-4" style="display:none;text-align:center;">
 					<div id="cp-done-avatar" style="font-size:64px;margin:20px 0;"></div>
 					<div id="cp-done-message" style="font-size:1.2em;margin:20px 0;"></div>
-					<a id="cp-done-chat" href="#" class="button button-primary button-hero"><?php esc_html_e( "Let's hear it →", 'clawpress' ); ?></a>
+					<div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+						<a id="cp-done-chat" href="#" class="button button-primary button-hero"><?php esc_html_e( "Let's hear it →", 'clawpress' ); ?></a>
+						<button id="cp-done-claw" class="button button-hero" style="border-style:dashed;"><?php esc_html_e( '🐾 Connect your own agent', 'clawpress' ); ?></button>
+					</div>
+					<div id="cp-claw-setup" style="display:none;margin-top:24px;text-align:left;max-width:520px;margin-left:auto;margin-right:auto;">
+						<p style="color:#646970;"><?php esc_html_e( 'Use this to connect an external AI agent (like OpenClaw) to act as your assistant. Add this to your agent\'s configuration:', 'clawpress' ); ?></p>
+						<pre id="cp-claw-code" style="background:#f0f0f1;padding:16px;border:1px solid #c3c4c7;border-radius:4px;font-size:13px;overflow-x:auto;white-space:pre-wrap;"></pre>
+						<p style="color:#646970;font-size:12px;"><?php esc_html_e( 'Your agent will connect via the ClawPress handshake protocol and act as this assistant user.', 'clawpress' ); ?></p>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -272,12 +280,29 @@ class ClawPress_Assistant_Admin {
 							'<strong>' + $('<span>').text(name).html() + '</strong> noticed a few things about your site.<br/>Want to hear?'
 						);
 						$('#cp-done-chat').attr('href', resp.data.chat_url);
+
+						// Build ClawPress agent config
+						var siteUrl = <?php echo wp_json_encode( home_url() ); ?>;
+						var clawConfig = {
+							site: siteUrl,
+							assistant: name,
+							role: 'ai_assistant',
+							handshake: siteUrl + '/wp-json/clawpress/v1/handshake',
+							manifest: siteUrl + '/wp-json/clawpress/v1/manifest'
+						};
+						$('#cp-claw-code').text(JSON.stringify(clawConfig, null, 2));
+
 						$('#cp-step-4').fadeIn(200);
 					} else {
 						alert(resp.data || 'Something went wrong.');
 						$btn.prop('disabled', false).text('Bring them to life');
 					}
 				});
+			});
+		});
+
+			$('#cp-done-claw').on('click', function() {
+				$('#cp-claw-setup').slideToggle(200);
 			});
 		});
 		</script>
